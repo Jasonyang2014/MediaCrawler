@@ -18,11 +18,16 @@ async def parse_cmd():
     parser.add_argument('--keywords', type=str,
                         help='please input keywords', default=config.KEYWORDS)
     parser.add_argument('--get_comment', type=str2bool,
-                        help='''whether to crawl level one comment, supported values case insensitive ('yes', 'true', 't', 'y', '1', 'no', 'false', 'f', 'n', '0')''', default=config.ENABLE_GET_COMMENTS)
+                        help='''whether to crawl level one comment, supported values case insensitive ('yes', 'true', 
+                        't', 'y', '1', 'no', 'false', 'f', 'n', '0')''',
+                        default=config.ENABLE_GET_COMMENTS)
     parser.add_argument('--get_sub_comment', type=str2bool,
-                        help=''''whether to crawl level two comment, supported values case insensitive ('yes', 'true', 't', 'y', '1', 'no', 'false', 'f', 'n', '0')''', default=config.ENABLE_GET_SUB_COMMENTS)
+                        help=''''whether to crawl level two comment, supported values case insensitive ('yes', 
+                        'true', 't', 'y', '1', 'no', 'false', 'f', 'n', '0')''',
+                        default=config.ENABLE_GET_SUB_COMMENTS)
     parser.add_argument('--save_data_option', type=str,
-                        help='where to save the data (csv or db or json)', choices=['csv', 'db', 'json'], default=config.SAVE_DATA_OPTION)
+                        help='where to save the data (csv or db or json)', choices=['csv', 'db', 'json'],
+                        default=config.SAVE_DATA_OPTION)
     parser.add_argument('--cookies', type=str,
                         help='cookies used for cookie login type', default=config.COOKIES)
 
@@ -38,3 +43,35 @@ async def parse_cmd():
     config.ENABLE_GET_SUB_COMMENTS = args.get_sub_comment
     config.SAVE_DATA_OPTION = args.save_data_option
     config.COOKIES = args.cookies
+
+
+class Args():
+    def __init__(self, platform=config.PLATFORM,
+                 lt=config.LOGIN_TYPE,
+                 type=config.CRAWLER_TYPE,
+                 start=config.START_PAGE,
+                 keywords=config.KEYWORDS,
+                 get_comment=config.ENABLE_GET_COMMENTS,
+                 get_sub_comment=config.ENABLE_GET_SUB_COMMENTS,
+                 save_data_option=config.SAVE_DATA_OPTION,
+                 cookies=config.COOKIES):
+        self.platform = platform
+        self.lt = lt
+        self.type = type
+        self.start = start
+        self.keywords = keywords
+        self.get_comment = get_comment
+        self.get_sub_comment = get_sub_comment
+        self.save_data_option = save_data_option
+        self.cookies = cookies
+
+    def parse(self):
+        config.PLATFORM = self.platform
+        config.LOGIN_TYPE = self.lt
+        config.CRAWLER_TYPE = self.type
+        config.START_PAGE = self.start
+        config.KEYWORDS = self.keywords
+        config.ENABLE_GET_COMMENTS = self.get_comment
+        config.ENABLE_GET_SUB_COMMENTS = self.get_sub_comment
+        config.SAVE_DATA_OPTION = self.save_data_option
+        config.COOKIES = self.cookies
