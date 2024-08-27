@@ -13,6 +13,12 @@
 原理：利用[playwright](https://playwright.dev/)搭桥，保留登录成功后的上下文浏览器环境，通过执行JS表达式获取一些加密参数
 通过使用此方式，免去了复现核心加密JS代码，逆向难度大大降低
 
+[MediaCrawlerPro](https://github.com/MediaCrawlerPro)版本已经迭代出来了，相较于现在的优势：
+- 多账号+IP代理支持（重点！）
+- 去除Playwright依赖，使用更加简单
+- 支持linux部署（Docker docker-compose）
+- 代码重构优化，更加易读易维护（解耦请求签名逻辑）
+
 
 ## 功能列表
 | 平台  | 关键词搜索 | 指定帖子ID爬取 | 二级评论 | 指定创作者主页 | 登录态缓存 | IP代理池 | 生成评论词云图 |
@@ -21,8 +27,8 @@
 | 抖音  | ✅     | ✅        | ✅    | ✅       | ✅     | ✅     | ✅    |
 | 快手  | ✅     | ✅        | ✅   | ✅      | ✅     | ✅     | ✅    |
 | B 站 | ✅     | ✅        | ✅   | ✅      | ✅     | ✅     | ✅    |
-| 微博  | ✅     | ✅        | ✅   | ❌      | ✅     | ✅     | ✅    |
-| 贴吧  | ✅     | ✅        | ✅   | ❌      | ✅     | ✅     | ✅    |
+| 微博  | ✅     | ✅        | ✅   | ✅      | ✅     | ✅     | ✅    |
+| 贴吧  | ✅     | ✅        | ✅   | ✅      | ✅     | ✅     | ✅    |
 
 
 ## 使用方法
@@ -33,7 +39,7 @@
    cd MediaCrawler
    
    # 创建虚拟环境
-   # 注意python 版本需要3.7 - 3.9 高于该版本可能会出现一些依赖包兼容问题
+   # 我的python版本是：3.9.6，requirements.txt中的库是基于这个版本的，如果是其他python版本，可能requirements.txt中的库不兼容，自行解决一下。
    python -m venv venv
    
    # macos & linux 激活虚拟环境
@@ -75,15 +81,17 @@
    ```
 
 ### 数据保存
-- 支持保存到关系型数据库（Mysql、PgSQL等）
+- 支持关系型数据库Mysql中保存（需要提前创建数据库）
     - 执行 `python db.py` 初始化数据库数据库表结构（只在首次执行）
 - 支持保存到csv中（data/目录下）
 - 支持保存到json中（data/目录下）
 
 
+加入MediaCrawler爬虫项目交流群。[点击跳转加入](#join_wechat_group)
+
 ## 开发者服务
 - MediaCrawler视频课程：
-  > 课程介绍飞书文档链接：https://relakkes.feishu.cn/wiki/JUgBwdhIeiSbAwkFCLkciHdAnhh
+  > 视频课程介绍飞书文档链接：https://relakkes.feishu.cn/wiki/JUgBwdhIeiSbAwkFCLkciHdAnhh
   > 如果你想很快入门这个项目，或者想了具体实现原理，我推荐你看看这个视频课程，从设计出发一步步带你如何使用，门槛大大降低
   > 
   > 同时也是对我开源的支持，如果你能支持我的课程，我将会非常开心～<br>
@@ -94,17 +102,23 @@
   <img alt="xingqiu" src="https://nm.zizhi1.com/static/img/8e1312d1f52f2e0ff436ea7196b4e27b.15555424244122T1.webp" style="width: auto;height: 400px" >
   </p>
   
-  星球精选文章： 
+  星球精选文章：
+  - [逆向案例1 - 某16x8平台商品列表接口逆向参数分析](https://articles.zsxq.com/id_x1qmtg8pzld9.html)
+  - [逆向案例2 - Product Hunt月度最佳产品榜单接口加密参数分析](https://articles.zsxq.com/id_au4eich3x2sg.html)
   - [【独创】使用Playwright获取某音a_bogus参数流程（包含加密参数分析）](https://articles.zsxq.com/id_u89al50jk9x0.html)
   - [【独创】使用Playwright低成本获取某书X-s参数流程分析（当年的回忆录）](https://articles.zsxq.com/id_u4lcrvqakuc7.html)
   - [ MediaCrawler-基于抽象类设计重构项目缓存](https://articles.zsxq.com/id_4ju73oxewt9j.html)
   - [ 手把手带你撸一个自己的IP代理池](https://articles.zsxq.com/id_38fza371ladm.html) 
-  
-## 感谢下列Sponsors对本仓库赞助
-- <a href="https://sider.ai/ad-land-redirect?source=github&p1=mi&p2=kk">通过注册安装这个款免费的Sider ChatGPT插件帮我获得一定奖励💰，这个插件我用了大半年，作为谷歌上最火的一款插件，体验非常不错。</a>
-> 安装并注册该浏览器插件之后保留一天即可，我就可以获得3元的推广奖励，谢谢大家，支持我继续开源项目。
 
-成为赞助者，展示你的产品在这里，联系作者wx：yzglan
+
+
+## 感谢下列Sponsors对本仓库赞助
+- <a href="https://www.kuaidaili.com/?ref=ldwkjqipvz6c">【快代理】企业级代理IP服务，极速稳定，安全可靠。爬虫工程师的绝佳选择。</a>
+  <a href="https://www.kuaidaili.com/?ref=ldwkjqipvz6c" target="_blank"><img src="https://www.kuaidaili.com/img/cps/470_300.png" alt="【快代理】企业级代理IP服务，极速稳定，安全可靠。爬虫工程师的绝佳选择。"></a><br>
+
+- <a href="https://sider.ai/ad-land-redirect?source=github&p1=mi&p2=kk">全网最火的ChatGPT插件Sider，我也免费薅羊毛用了快一年了，体验拉满。</a>
+
+成为赞助者，可以将您产品展示在这里，每天获得大量曝光，联系作者微信：yzglan
 
 ## 打赏
 
@@ -116,43 +130,17 @@
   <img alt="打赏-支付宝" src="static/images/zfb_pay.png" style="width: 200px" />
 </p>
 
-## 捐赠信息
-
-PS：如果打赏时请备注捐赠者，如有遗漏请联系我添加（有时候消息多可能会漏掉，十分抱歉）
-
-| 捐赠者         | 捐赠金额  | 捐赠日期       |
-|-------------|-------|------------|
-| *皓          | 50 元  | 2024-03-18 |
-| *刚          | 50 元  | 2024-03-18 |
-| *乐          | 20 元  | 2024-03-17 |
-| *木          | 20 元  | 2024-03-17 |
-| *诚          | 20 元  | 2024-03-17 |
-| Strem Gamer | 20 元  | 2024-03-16 |
-| *鑫          | 20 元  | 2024-03-14 |
-| Yuzu        | 20 元  | 2024-03-07 |
-| **宁         | 100 元 | 2024-03-03 |
-| **媛         | 20 元  | 2024-03-03 |
-| Scarlett    | 20 元  | 2024-02-16 |
-| Asun        | 20 元  | 2024-01-30 |
-| 何*          | 100 元 | 2024-01-21 |
-| allen       | 20 元  | 2024-01-10 |
-| llllll      | 20 元  | 2024-01-07 |
-| 邝*元         | 20 元  | 2023-12-29 |
-| 50chen      | 50 元  | 2023-12-22 |
-| xiongot     | 20 元  | 2023-12-17 |
-| atom.hu     | 20 元  | 2023-12-16 |
-| 一呆          | 20 元  | 2023-12-01 |
-| 坠落          | 50 元  | 2023-11-08 |
-
+查看打赏列表 [点击跳转](#donate)
 
 
 ## MediaCrawler爬虫项目交流群：
-> 扫描下方我的个人微信，备注：github，拉你进MediaCrawler项目交流群(请一定备注：github，会有wx小助手自动拉群)
-> 
-> 如果图片展示不出来，可以直接添加我的微信号：yzglan
+<div id="join_wechat_group"> 
+
+> 如果图片展示不出来或者群链接过期，可以直接添加我的微信号：yzglan
 
 <div style="max-width: 200px">  
-<p><img alt="relakkes_wechat" src="static/images/relakkes_weichat.JPG" style="width: 200px;height: 100%" ></p>
+<p><img alt="直接添加我的微信号：yzglan" src="static/images/13群二维码.JPG" style="width: 200px;height: 100%" ></p>
+</div>
 </div>
 
 
@@ -180,256 +168,10 @@ dy和xhs使用Playwright登录现在会出现滑块验证 + 短信验证，手�
 我新开的爬虫教程Github仓库 [CrawlerTutorial](https://github.com/NanmiCoder/CrawlerTutorial) ，感兴趣的朋友可以关注一下，持续更新，主打一个免费.
 
 
-## 项目贡献者
-> 感谢你们的贡献，让项目变得更好！（贡献比较多的可以加我wx，免费拉你进我的知识星球，后期还有一些其他福利。）
-<!-- readme: contributors -start -->
-<table>
-	<tbody>
-		<tr>
-            <td align="center">
-                <a href="https://github.com/NanmiCoder">
-                    <img src="https://avatars.githubusercontent.com/u/47178017?v=4" width="100;" alt="NanmiCoder"/>
-                    <br />
-                    <sub><b>程序员阿江-Relakkes</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/leantli">
-                    <img src="https://avatars.githubusercontent.com/u/117699758?v=4" width="100;" alt="leantli"/>
-                    <br />
-                    <sub><b>leantli</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/Rosyrain">
-                    <img src="https://avatars.githubusercontent.com/u/116946548?v=4" width="100;" alt="Rosyrain"/>
-                    <br />
-                    <sub><b>Rosyrain</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/BaoZhuhan">
-                    <img src="https://avatars.githubusercontent.com/u/140676370?v=4" width="100;" alt="BaoZhuhan"/>
-                    <br />
-                    <sub><b>Bao Zhuhan</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/nelzomal">
-                    <img src="https://avatars.githubusercontent.com/u/8512926?v=4" width="100;" alt="nelzomal"/>
-                    <br />
-                    <sub><b>zhounan</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/helloteemo">
-                    <img src="https://avatars.githubusercontent.com/u/46838719?v=4" width="100;" alt="helloteemo"/>
-                    <br />
-                    <sub><b>helloteemo</b></sub>
-                </a>
-            </td>
-		</tr>
-		<tr>
-            <td align="center">
-                <a href="https://github.com/Ermeng98">
-                    <img src="https://avatars.githubusercontent.com/u/55784769?v=4" width="100;" alt="Ermeng98"/>
-                    <br />
-                    <sub><b>Ermeng</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/PeanutSplash">
-                    <img src="https://avatars.githubusercontent.com/u/98582625?v=4" width="100;" alt="PeanutSplash"/>
-                    <br />
-                    <sub><b>PeanutSplash</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/Hiro-Lin">
-                    <img src="https://avatars.githubusercontent.com/u/40111864?v=4" width="100;" alt="Hiro-Lin"/>
-                    <br />
-                    <sub><b>HIRO</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/henryhyn">
-                    <img src="https://avatars.githubusercontent.com/u/5162443?v=4" width="100;" alt="henryhyn"/>
-                    <br />
-                    <sub><b>Henry He</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/Akiqqqqqqq">
-                    <img src="https://avatars.githubusercontent.com/u/51102894?v=4" width="100;" alt="Akiqqqqqqq"/>
-                    <br />
-                    <sub><b>leonardoqiuyu</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/jayeeliu">
-                    <img src="https://avatars.githubusercontent.com/u/77389?v=4" width="100;" alt="jayeeliu"/>
-                    <br />
-                    <sub><b>jayeeliu</b></sub>
-                </a>
-            </td>
-		</tr>
-		<tr>
-            <td align="center">
-                <a href="https://github.com/fruitswordman">
-                    <img src="https://avatars.githubusercontent.com/u/103844614?v=4" width="100;" alt="fruitswordman"/>
-                    <br />
-                    <sub><b>Wenbo Lu</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/ZhouXsh">
-                    <img src="https://avatars.githubusercontent.com/u/131248181?v=4" width="100;" alt="ZhouXsh"/>
-                    <br />
-                    <sub><b>ZhouXsh</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/ZuWard">
-                    <img src="https://avatars.githubusercontent.com/u/38209256?v=4" width="100;" alt="ZuWard"/>
-                    <br />
-                    <sub><b>ZuWard</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/Zzendrix">
-                    <img src="https://avatars.githubusercontent.com/u/154900254?v=4" width="100;" alt="Zzendrix"/>
-                    <br />
-                    <sub><b>Zendrix</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/chunpat">
-                    <img src="https://avatars.githubusercontent.com/u/19848304?v=4" width="100;" alt="chunpat"/>
-                    <br />
-                    <sub><b>zhangzhenpeng</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/tanpenggood">
-                    <img src="https://avatars.githubusercontent.com/u/37927946?v=4" width="100;" alt="tanpenggood"/>
-                    <br />
-                    <sub><b>Sam Tan</b></sub>
-                </a>
-            </td>
-		</tr>
-		<tr>
-            <td align="center">
-                <a href="https://github.com/xbsheng">
-                    <img src="https://avatars.githubusercontent.com/u/56357338?v=4" width="100;" alt="xbsheng"/>
-                    <br />
-                    <sub><b>xbsheng</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/yangrq1018">
-                    <img src="https://avatars.githubusercontent.com/u/25074163?v=4" width="100;" alt="yangrq1018"/>
-                    <br />
-                    <sub><b>Martin</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/zhihuiio">
-                    <img src="https://avatars.githubusercontent.com/u/165655688?v=4" width="100;" alt="zhihuiio"/>
-                    <br />
-                    <sub><b>zhihuiio</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/renaissancezyc">
-                    <img src="https://avatars.githubusercontent.com/u/118403818?v=4" width="100;" alt="renaissancezyc"/>
-                    <br />
-                    <sub><b>Ren</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/Tianci-King">
-                    <img src="https://avatars.githubusercontent.com/u/109196852?v=4" width="100;" alt="Tianci-King"/>
-                    <br />
-                    <sub><b>Wang Tianci</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/Styunlen">
-                    <img src="https://avatars.githubusercontent.com/u/30810222?v=4" width="100;" alt="Styunlen"/>
-                    <br />
-                    <sub><b>Styunlen</b></sub>
-                </a>
-            </td>
-		</tr>
-		<tr>
-            <td align="center">
-                <a href="https://github.com/Schofi">
-                    <img src="https://avatars.githubusercontent.com/u/33537727?v=4" width="100;" alt="Schofi"/>
-                    <br />
-                    <sub><b>Schofi</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/Klu5ure">
-                    <img src="https://avatars.githubusercontent.com/u/166240879?v=4" width="100;" alt="Klu5ure"/>
-                    <br />
-                    <sub><b>Klu5ure</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/keeper-jie">
-                    <img src="https://avatars.githubusercontent.com/u/33612777?v=4" width="100;" alt="keeper-jie"/>
-                    <br />
-                    <sub><b>Kermit</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/kexinoh">
-                    <img src="https://avatars.githubusercontent.com/u/91727108?v=4" width="100;" alt="kexinoh"/>
-                    <br />
-                    <sub><b>KEXNA</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/aa65535">
-                    <img src="https://avatars.githubusercontent.com/u/5417786?v=4" width="100;" alt="aa65535"/>
-                    <br />
-                    <sub><b>Jian Chang</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/Jasonyang2014">
-                    <img src="https://avatars.githubusercontent.com/u/8269290?v=4" width="100;" alt="Jasonyang2014"/>
-                    <br />
-                    <sub><b>AuYeung</b></sub>
-                </a>
-            </td>
-		</tr>
-		<tr>
-            <td align="center">
-                <a href="https://github.com/522109452">
-                    <img src="https://avatars.githubusercontent.com/u/16929874?v=4" width="100;" alt="522109452"/>
-                    <br />
-                    <sub><b>tianqing</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/3DRX">
-                    <img src="https://avatars.githubusercontent.com/u/67278980?v=4" width="100;" alt="3DRX"/>
-                    <br />
-                    <sub><b>Jingyang Kang</b></sub>
-                </a>
-            </td>
-		</tr>
-	<tbody>
-</table>
-<!-- readme: contributors -end -->
-
 ## star 趋势图
 - 如果该项目对你有帮助，star一下 ❤️❤️❤️
 
 [![Star History Chart](https://api.star-history.com/svg?repos=NanmiCoder/MediaCrawler&type=Date)](https://star-history.com/#NanmiCoder/MediaCrawler&Date)
-
 
 
 
@@ -439,7 +181,39 @@ dy和xhs使用Playwright登录现在会出现滑块验证 + 短信验证，手�
 - 短信转发 [参考仓库](https://github.com/pppscn/SmsForwarder)
 - 内网穿透工具 [ngrok](https://ngrok.com/docs/)
 
+## 捐赠信息
+<div id="donate">
 
+PS：如果打赏时请备注捐赠者，如有遗漏请联系我添加（有时候消息多可能会漏掉，十分抱歉）
+
+| 捐赠者         | 捐赠金额  | 捐赠日期       |
+|-------------|-------|------------|
+| srhedbj     | 50 元  | 2024-08-20 |
+| *嘉          | 20 元  | 2024-08-15 |
+| *良          | 50 元  | 2024-08-13 |
+| *皓          | 50 元  | 2024-03-18 |
+| *刚          | 50 元  | 2024-03-18 |
+| *乐          | 20 元  | 2024-03-17 |
+| *木          | 20 元  | 2024-03-17 |
+| *诚          | 20 元  | 2024-03-17 |
+| Strem Gamer | 20 元  | 2024-03-16 |
+| *鑫          | 20 元  | 2024-03-14 |
+| Yuzu        | 20 元  | 2024-03-07 |
+| **宁         | 100 元 | 2024-03-03 |
+| **媛         | 20 元  | 2024-03-03 |
+| Scarlett    | 20 元  | 2024-02-16 |
+| Asun        | 20 元  | 2024-01-30 |
+| 何*          | 100 元 | 2024-01-21 |
+| allen       | 20 元  | 2024-01-10 |
+| llllll      | 20 元  | 2024-01-07 |
+| 邝*元         | 20 元  | 2023-12-29 |
+| 50chen      | 50 元  | 2023-12-22 |
+| xiongot     | 20 元  | 2023-12-17 |
+| atom.hu     | 20 元  | 2023-12-16 |
+| 一呆          | 20 元  | 2023-12-01 |
+| 坠落          | 50 元  | 2023-11-08 |
+
+</div>
 
 ## 免责声明
 <div id="disclaimer"> 
@@ -462,8 +236,6 @@ dy和xhs使用Playwright登录现在会出现滑块验证 + 短信验证，手�
 ### 6. 最终解释权
 关于本项目的最终解释权归开发者所有。开发者保留随时更改或更新本免责声明的权利，恕不另行通知。
 </div>
-
-
 
 
 ### 感谢JetBrains提供的免费开源许可证支持
