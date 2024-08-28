@@ -18,3 +18,4 @@ parsel==1.9.1
 flask==3.0.3
 numpy~=2.0.1
 asgiref~=3.8.1
+aiosqlite==0.20.0

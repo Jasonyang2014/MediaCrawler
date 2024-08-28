@@ -39,11 +39,18 @@ async def main():
     if config.SAVE_DATA_OPTION == "db":
         await db.init_db()
 
+    # init db
+    if config.SAVE_DATA_OPTION == "sqlite":
+        await db.init_sqlite_db()
+
     crawler = CrawlerFactory.create_crawler(platform=config.PLATFORM)
     await crawler.start()
 
     if config.SAVE_DATA_OPTION == "db":
         await db.close()
+
+    if config.SAVE_DATA_OPTION == "sqlite":
+        await db.close_sqlite()
 
 
 if __name__ == '__main__':

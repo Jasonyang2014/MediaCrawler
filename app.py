@@ -43,9 +43,11 @@ async def run():
         if task is None or task.done():
             loop = asyncio.get_running_loop()
             task = loop.create_task(start())
+            # await start()
             cache.set(task_name, task, expire_time=2 * 24 * 60 * 60)
             cache.set(arg.platform, True, expire_time=2 * 24 * 60 * 60)
             return f"Task {task_name} started successfully", 202
+            # return f"Task started successfully", 202
         else:
             return f"Task {task_name} is already running", 200
     except Exception as e:
@@ -55,14 +57,12 @@ async def run():
 
 
 async def start():
-    if config.SAVE_DATA_OPTION == "db":
-        await db.init_db()
+    if config.SAVE_DATA_OPTION == "sqlite":
+        await db.init_sqlite_db()
 
     crawler = CrawlerFactory.create_crawler(platform=config.PLATFORM)
     await crawler.start()
 
-    if config.SAVE_DATA_OPTION == "db":
-        await db.close()
 
 
 # 将 Flask 应用转换为 ASGI 应用

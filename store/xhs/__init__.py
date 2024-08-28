@@ -16,6 +16,7 @@ class XhsStoreFactory:
     STORES = {
         "csv": XhsCsvStoreImplement,
         "db": XhsDbStoreImplement,
+        "sqlite": XhsDbStoreImplement,
         "json": XhsJsonStoreImplement
     }
 

@@ -5,6 +5,7 @@
 
 from typing import Dict, List
 
+from async_db import AbstractDBClient
 from db import AsyncMysqlDB
 from var import media_crawler_db_var
 
@@ -18,7 +19,7 @@ async def query_content_by_content_id(content_id: str) -> Dict:
     Returns:
 
     """
-    async_db_conn: AsyncMysqlDB = media_crawler_db_var.get()
+    async_db_conn: AbstractDBClient = media_crawler_db_var.get()
     sql: str = f"select * from xhs_note where note_id = '{content_id}'"
     rows: List[Dict] = await async_db_conn.query(sql)
     if len(rows) > 0:
@@ -35,7 +36,7 @@ async def add_new_content(content_item: Dict) -> int:
     Returns:
 
     """
-    async_db_conn: AsyncMysqlDB = media_crawler_db_var.get()
+    async_db_conn: AbstractDBClient = media_crawler_db_var.get()
     last_row_id: int = await async_db_conn.item_to_table("xhs_note", content_item)
     return last_row_id
 
@@ -50,7 +51,7 @@ async def update_content_by_content_id(content_id: str, content_item: Dict) -> i
     Returns:
 
     """
-    async_db_conn: AsyncMysqlDB = media_crawler_db_var.get()
+    async_db_conn: AbstractDBClient = media_crawler_db_var.get()
     effect_row: int = await async_db_conn.update_table("xhs_note", content_item, "note_id", content_id)
     return effect_row
 
@@ -65,7 +66,7 @@ async def query_comment_by_comment_id(comment_id: str) -> Dict:
     Returns:
 
     """
-    async_db_conn: AsyncMysqlDB = media_crawler_db_var.get()
+    async_db_conn: AbstractDBClient = media_crawler_db_var.get()
     sql: str = f"select * from xhs_note_comment where comment_id = '{comment_id}'"
     rows: List[Dict] = await async_db_conn.query(sql)
     if len(rows) > 0:
@@ -82,7 +83,7 @@ async def add_new_comment(comment_item: Dict) -> int:
     Returns:
 
     """
-    async_db_conn: AsyncMysqlDB = media_crawler_db_var.get()
+    async_db_conn: AbstractDBClient = media_crawler_db_var.get()
     last_row_id: int = await async_db_conn.item_to_table("xhs_note_comment", comment_item)
     return last_row_id
 
@@ -97,7 +98,7 @@ async def update_comment_by_comment_id(comment_id: str, comment_item: Dict) -> i
     Returns:
 
     """
-    async_db_conn: AsyncMysqlDB = media_crawler_db_var.get()
+    async_db_conn: AbstractDBClient = media_crawler_db_var.get()
     effect_row: int = await async_db_conn.update_table("xhs_note_comment", comment_item, "comment_id", comment_id)
     return effect_row
 
@@ -111,7 +112,7 @@ async def query_creator_by_user_id(user_id: str) -> Dict:
     Returns:
 
     """
-    async_db_conn: AsyncMysqlDB = media_crawler_db_var.get()
+    async_db_conn: AbstractDBClient = media_crawler_db_var.get()
     sql: str = f"select * from xhs_creator where user_id = '{user_id}'"
     rows: List[Dict] = await async_db_conn.query(sql)
     if len(rows) > 0:
@@ -128,7 +129,7 @@ async def add_new_creator(creator_item: Dict) -> int:
     Returns:
 
     """
-    async_db_conn: AsyncMysqlDB = media_crawler_db_var.get()
+    async_db_conn: AbstractDBClient = media_crawler_db_var.get()
     last_row_id: int = await async_db_conn.item_to_table("xhs_creator", creator_item)
     return last_row_id
 
@@ -143,6 +144,6 @@ async def update_creator_by_user_id(user_id: str, creator_item: Dict) -> int:
     Returns:
 
     """
-    async_db_conn: AsyncMysqlDB = media_crawler_db_var.get()
+    async_db_conn: AbstractDBClient = media_crawler_db_var.get()
     effect_row: int = await async_db_conn.update_table("xhs_creator", creator_item, "user_id", user_id)
     return effect_row

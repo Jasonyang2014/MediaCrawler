@@ -2,12 +2,86 @@
 # @Author  : relakkes@gmail.com
 # @Time    : 2024/4/6 14:21
 # @Desc    : 异步Aiomysql的增删改查封装
+from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Union
 
 import aiomysql
+import aiosqlite
 
 
-class AsyncMysqlDB:
+class AbstractDBClient(ABC):
+
+    @abstractmethod
+    async def query(self, sql: str, *args: Union[str, int]) -> List[Dict[str, Any]]:
+        pass
+
+    @abstractmethod
+    async def get_first(self, sql: str, *args: Union[str, int]) -> Union[Dict[str, Any], None]:
+        pass
+
+    @abstractmethod
+    async def item_to_table(self, table_name: str, item: Dict[str, Any]) -> int:
+        pass
+
+    @abstractmethod
+    async def update_table(self, table_name: str, updates: Dict[str, Any], field_where: str,
+                           value_where: Union[str, int, float]) -> int:
+        pass
+
+    @abstractmethod
+    async def execute(self, sql: str, *args: Union[str, int]) -> int:
+        pass
+
+
+class AsyncSqliteDB(AbstractDBClient):
+    def __init__(self, db_path: str) -> None:
+        self.db_path = db_path
+
+    async def query(self, sql: str, *args: Union[str, int]) -> List[Dict[str, Any]]:
+        async with aiosqlite.connect(self.db_path) as db:
+            db.row_factory = aiosqlite.Row
+            async with db.execute(sql, args) as cursor:
+                rows = await cursor.fetchall()
+                return [dict(row) for row in rows] or []
+
+    async def get_first(self, sql: str, *args: Union[str, int]) -> Union[Dict[str, Any], None]:
+        async with aiosqlite.connect(self.db_path) as db:
+            db.row_factory = aiosqlite.Row
+            async with db.execute(sql, args) as cursor:
+                row = await cursor.fetchone()
+                return dict(row) if row else None
+
+    async def item_to_table(self, table_name: str, item: Dict[str, Any]) -> int:
+        fields = list(item.keys())
+        values = list(item.values())
+        fieldstr = ','.join(fields)
+        valstr = ','.join(['?'] * len(item))
+        sql = f"INSERT INTO {table_name} ({fieldstr}) VALUES({valstr})"
+
+        async with aiosqlite.connect(self.db_path) as db:
+            async with db.execute(sql, values) as cursor:
+                await db.commit()
+                return cursor.lastrowid
+
+    async def update_table(self, table_name: str, updates: Dict[str, Any], field_where: str,
+                           value_where: Union[str, int, float]) -> int:
+        set_clause = ', '.join([f"{k} = ?" for k in updates.keys()])
+        values = list(updates.values()) + [value_where]
+        sql = f"UPDATE {table_name} SET {set_clause} WHERE {field_where} = ?"
+
+        async with aiosqlite.connect(self.db_path) as db:
+            async with db.execute(sql, values) as cursor:
+                await db.commit()
+                return cursor.rowcount
+
+    async def execute(self, sql: str, *args: Union[str, int]) -> int:
+        async with aiosqlite.connect(self.db_path) as db:
+            async with db.execute(sql, args) as cursor:
+                await db.commit()
+                return cursor.rowcount
+
+
+class AsyncMysqlDB(AbstractDBClient):
     def __init__(self, pool: aiomysql.Pool) -> None:
         self.__pool = pool
 

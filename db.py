@@ -8,9 +8,10 @@ from urllib.parse import urlparse
 
 import aiofiles
 import aiomysql
+import aiosqlite
 
 import config
-from async_db import AsyncMysqlDB
+from async_db import AsyncMysqlDB, AbstractDBClient, AsyncSqliteDB
 from tools import utils
 from var import db_conn_pool_var, media_crawler_db_var
 
@@ -84,12 +85,27 @@ async def init_table_schema():
     """
     utils.logger.info("[init_table_schema] begin init mysql table schema ...")
     await init_mediacrawler_db()
-    async_db_obj: AsyncMysqlDB = media_crawler_db_var.get()
+    async_db_obj: AbstractDBClient = media_crawler_db_var.get()
     async with aiofiles.open("schema/tables.sql", mode="r", encoding="utf-8") as f:
         schema_sql = await f.read()
         await async_db_obj.execute(schema_sql)
         utils.logger.info("[init_table_schema] mediacrawler table schema init successful")
         await close()
+
+
+async def init_sqlite_db():
+    utils.logger.info("[init_sqlite_db] begin init sqlite db ...")
+    with aiosqlite.connect(database=config.SQLITE_DB_FILE) as db:
+        with aiofiles.open("schema/schema_sqlite.sql", mode="r", encoding="utf-8") as f:
+            schema_sql = await f.read()
+            sqls = schema_sql.split(";")
+            for sql in sqls:
+                await db.execute(sql)
+                await db.commit()
+            utils.logger.info("[init_sqlite_db] mediacrawler table schema init successful")
+        await db.close()
+
+    media_crawler_db_var.set(AsyncSqliteDB(config.SQLITE_DB_FILE))
 
 
 if __name__ == '__main__':

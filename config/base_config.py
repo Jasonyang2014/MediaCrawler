@@ -28,7 +28,7 @@ HEADLESS = False
 SAVE_LOGIN_STATE = True
 
 # 数据保存类型选项配置,支持三种类型：csv、db、json
-SAVE_DATA_OPTION = "json"  # csv or db or json
+SAVE_DATA_OPTION = "sqlite"  # csv or db or json
 
 # 用户浏览器缓存的浏览器文件配置
 USER_DATA_DIR = "%s_user_data_dir"  # %s will be replaced by platform name
@@ -150,3 +150,5 @@ FONT_PATH = "./docs/STZHONGS.TTF"
 ENABLE_LOG_TO_FILE = True
 # 是否关闭控制台日志
 ENABLE_CONSOLE_LOG = True
+
+SQLITE_DB_FILE = "./data/sqlite.db"
