@@ -215,7 +215,8 @@ class XiaoHongShuCrawler(AbstractCrawler):
                 await xhs_store.update_xhs_note(note_detail)
         await self.batch_get_note_comments(need_get_comment_note_ids)
 
-    async def get_note_detail_async_task(self, note_id: str, xsec_source: str, xsec_token: str, semaphore: asyncio.Semaphore) -> \
+    async def get_note_detail_async_task(self, note_id: str, xsec_source: str, xsec_token: str,
+                                         semaphore: asyncio.Semaphore) -> \
             Optional[Dict]:
         """Get note detail"""
         async with semaphore:
@@ -300,27 +301,31 @@ class XiaoHongShuCrawler(AbstractCrawler):
     ) -> BrowserContext:
         """Launch browser and create browser context"""
         utils.logger.info("[XiaoHongShuCrawler.launch_browser] Begin create browser context ...")
-        if config.SAVE_LOGIN_STATE:
-            # feat issue #14
-            # we will save login state to avoid login every time
-            user_data_dir = os.path.join(os.getcwd(), "browser_data",
-                                         config.USER_DATA_DIR % config.PLATFORM)  # type: ignore
-            browser_context = await chromium.launch_persistent_context(
-                user_data_dir=user_data_dir,
-                accept_downloads=True,
-                headless=headless,
-                proxy=playwright_proxy,  # type: ignore
-                viewport={"width": 1920, "height": 1080},
-                user_agent=user_agent
-            )
-            return browser_context
-        else:
-            browser = await chromium.launch(headless=headless, proxy=playwright_proxy)  # type: ignore
-            browser_context = await browser.new_context(
-                viewport={"width": 1920, "height": 1080},
-                user_agent=user_agent
-            )
-            return browser_context
+
+        try:
+            if config.SAVE_LOGIN_STATE:
+                # feat issue #14
+                # we will save login state to avoid login every time
+                user_data_dir = os.path.join(os.getcwd(), "browser_data",
+                                             config.USER_DATA_DIR % config.PLATFORM)  # type: ignore
+                browser_context = await chromium.launch_persistent_context(
+                    user_data_dir=user_data_dir,
+                    accept_downloads=True,
+                    headless=headless,
+                    proxy=playwright_proxy,  # type: ignore
+                    viewport={"width": 1920, "height": 1080},
+                    user_agent=user_agent
+                )
+                return browser_context
+            else:
+                browser = await chromium.launch(headless=headless, proxy=playwright_proxy)  # type: ignore
+                browser_context = await browser.new_context(
+                    viewport={"width": 1920, "height": 1080},
+                    user_agent=user_agent
+                )
+                return browser_context
+        except Exception as e:
+            utils.logger.info("launch_browser error", e)
 
     async def close(self):
         """Close browser context"""

@@ -1,35 +1,44 @@
-import json
 import asyncio
-from flask import Flask, request
-from cmd_arg import Args
-from main import CrawlerFactory
+import json
+import threading
+import time
+from concurrent.futures import ThreadPoolExecutor
+
+from flask import Flask, request, render_template, jsonify
+from flask_socketio import SocketIO, emit
+
 import config
 import db
-from asgiref.wsgi import WsgiToAsgi
 from cache.cache_factory import CacheFactory
+from cmd_arg import Args
+from main import CrawlerFactory
 from tools.utils import logger
+from tools.time_util import get_current_time
 
 app = Flask(__name__)
+# app.config['SECRET_KEY'] = 'your_secret_key'  # 添加一个密钥
+socketio = SocketIO(app, async_mode='threading')  # 使用 threading 模式
 cache = CacheFactory.create_cache("memory")
+executor = ThreadPoolExecutor()
 
 
 @app.route("/")
 def hello():
-    return "Hello, World!"
+    return render_template("index.html")
 
 
 @app.post("/run")
-async def run():
-    error = None
+def run():
     try:
         cmd = request.data
         args = json.loads(cmd)
-        logger.info(f'received request:{args}')
+        logger.info(f'received request: {args}')
         arg = Args(**args)
         arg.parse()
         task_name = f"{arg.platform}-{arg.keywords}-task"
         platform_exists = cache.get(arg.platform)
         task = cache.get(task_name)
+
         if platform_exists:
             logger.info(f"platform {arg.platform} is running.")
             task_list = cache.keys(f"{arg.platform}-")
@@ -37,38 +46,73 @@ async def run():
                 logger.info(f"stopping task {task_list[0]}")
                 old_task = cache.get(task_list[0])
                 if old_task and not old_task.done():
-                    old_task.cancel()
-                    logger.info(f"stopped task {old_task}")
+                    logger.info(f"task {old_task} exists.")
 
-        if task is None or task.done():
-            loop = asyncio.get_running_loop()
-            task = loop.create_task(start())
-            # await start()
-            cache.set(task_name, task, expire_time=2 * 24 * 60 * 60)
-            cache.set(arg.platform, True, expire_time=2 * 24 * 60 * 60)
-            return f"Task {task_name} started successfully", 202
-            # return f"Task started successfully", 202
+        if task is None:
+            # Start the task in a background thread
+            executor.submit(start_task, arg, task_name)
+            return jsonify({"message": f"Task {task_name} started successfully"}), 202
         else:
-            return f"Task {task_name} is already running", 200
+            return jsonify({"message": f"Task {task_name} is already running"}), 200
     except Exception as e:
         error = str(e)
-        print(error)
-        return f"Error: {error}", 400
+        logger.error(f"Error in run(): {error}")
+        return jsonify({"error": error}), 400
 
 
-async def start():
-    if config.SAVE_DATA_OPTION == "sqlite":
-        await db.init_sqlite_db()
-
-    crawler = CrawlerFactory.create_crawler(platform=config.PLATFORM)
-    await crawler.start()
-
+def start_task(arg, task_name):
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(_start_task(arg, task_name))
+    loop.close()
 
 
-# 将 Flask 应用转换为 ASGI 应用
-asgi_app = WsgiToAsgi(app)
+async def _start_task(arg, task_name):
+    try:
+        if config.SAVE_DATA_OPTION == "sqlite":
+            await db.init_sqlite_db()
+
+        crawler = CrawlerFactory.create_crawler(platform=config.PLATFORM)
+        await crawler.start()
+
+        cache.set(task_name, True, expire_time=2 * 24 * 60 * 60)
+        cache.set(arg.platform, True, expire_time=2 * 24 * 60 * 60)
+        logger.info(f"Task {task_name} completed successfully")
+    except Exception as e:
+        logger.error(f"Error in _start_task: {str(e)}")
+    finally:
+        callback()
+
+
+def callback():
+    logger.info("task done.")
+
+
+def perform_search(data):
+    # 模拟搜索过程
+    socketio.emit('searchStatus', {'message': '开始搜索...'})
+
+    for i in range(5):  # 模拟5个结果
+        time.sleep(1)  # 模拟每个结果需要1秒
+        result = {
+            'id': f'{i + 1} {data["keywords"]}',
+            'name': f'{data["keywords"]}',
+            'keywords': f'{data["keywords"]}',
+            'start': get_current_time(),
+            'end': get_current_time()
+        }
+        socketio.emit('searchResult', {'type': 'searchResult', 'results': [result]})
+        socketio.emit('searchStatus', {'message': f'已找到 {i + 1} 个结果'})
+
+    socketio.emit('searchStatus', {'message': '搜索完成'})
+
+
+@socketio.on('search')
+def handle_search(json):
+    print('Received search request:', json)
+    # 在新线程中执行搜索,以避免阻塞
+    threading.Thread(target=perform_search, args=(json['data'],)).start()
+
 
 if __name__ == "__main__":
-    import uvicorn
-
-    uvicorn.run(asgi_app, host="0.0.0.0", port=5000)
+    socketio.run(app, host="0.0.0.0", port=5000, debug=True)

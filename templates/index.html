@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高级搜索</title>
+    <link rel="stylesheet" type="text/css" href="static/css/index.css">
+</head>
+<body>
+<h1>高级搜索</h1>
+<form class="search-form" id="searchForm">
+    <div class="search-row">
+        <input type="text" name="keywords" placeholder="输入搜索关键词" class="search-input" required>
+        <button type="submit" class="submit-btn">搜索</button>
+    </div>
+    <div class="options-row">
+        <div class="option-group">
+            <label for="platform">平台:</label>
+            <select name="platform" id="platform">
+                <option value="xhs">小红书</option>
+                <option value="dy">抖音</option>
+                <option value="ks">快手</option>
+                <option value="bili">B站</option>
+                <option value="wb">微博</option>
+                <option value="tieba">贴吧</option>
+            </select>
+        </div>
+        <div class="option-group">
+            <label for="lt">登录方式:</label>
+            <select name="lt" id="lt">
+                <option value="qrcode">二维码</option>
+                <option value="password">密码</option>
+            </select>
+        </div>
+        <div class="option-group">
+            <label for="type">搜索类型:</label>
+            <select name="type" id="type">
+                <option value="search">搜索</option>
+                <option value="user">用户</option>
+                <option value="hashtag">话题</option>
+            </select>
+        </div>
+    </div>
+</form>
+
+
+<div id="status"></div>
+<table id="resultsTable">
+    <thead>
+    <tr>
+        <th class="result-no">序号</th>
+        <th class="result-name">任务名称</th>
+        <th class="result-keywords">关键词</th>
+        <th class="result-start">开始时间</th>
+        <th class="result-end">结束时间</th>
+    </tr>
+    </thead>
+    <tbody id="resultsBody">
+    </tbody>
+</table>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+<script src="static/js/index.js"></script>
+</body>
+</html>

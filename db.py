@@ -95,17 +95,26 @@ async def init_table_schema():
 
 async def init_sqlite_db():
     utils.logger.info("[init_sqlite_db] begin init sqlite db ...")
-    with aiosqlite.connect(database=config.SQLITE_DB_FILE) as db:
-        with aiofiles.open("schema/schema_sqlite.sql", mode="r", encoding="utf-8") as f:
-            schema_sql = await f.read()
-            sqls = schema_sql.split(";")
-            for sql in sqls:
-                await db.execute(sql)
+    try:
+        async with aiosqlite.connect(database=config.SQLITE_DB_FILE) as db:
+            async with aiofiles.open("schema/schema_sqlite.sql", mode="r", encoding="utf-8") as f:
+                schema_sql = await f.read()
+                sqls = [sql.strip() for sql in schema_sql.split(";") if sql.strip()]
+                for sql in sqls:
+                    await db.execute(sql)
                 await db.commit()
             utils.logger.info("[init_sqlite_db] mediacrawler table schema init successful")
-        await db.close()
-
-    media_crawler_db_var.set(AsyncSqliteDB(config.SQLITE_DB_FILE))
+        media_crawler_db_var.set(AsyncSqliteDB(config.SQLITE_DB_FILE))
+        utils.logger.info("[init_sqlite_db] AsyncSqliteDB instance set successfully")
+    except aiosqlite.Error as e:
+        utils.logger.error(f"[init_sqlite_db] SQLite error: {e}")
+        raise
+    except IOError as e:
+        utils.logger.error(f"[init_sqlite_db] Error reading schema file: {e}")
+        raise
+    except Exception as e:
+        utils.logger.error(f"[init_sqlite_db] Unexpected error: {e}")
+        raise
 
 
 if __name__ == '__main__':

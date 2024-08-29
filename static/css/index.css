@@ -1,0 +1,92 @@
+
+body {
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.search-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.search-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.search-input {
+    flex-grow: 1;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 10px;
+}
+
+.submit-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+}
+
+.submit-btn:hover {
+    background-color: #45a049;
+}
+
+.options-row {
+    display: flex;
+    gap: 20px;
+}
+
+.option-group {
+    display: flex;
+    flex-direction: column;
+}
+
+select {
+    padding: 5px;
+    font-size: 14px;
+}
+
+#searchResults {
+    margin-top: 20px;
+    border-top: 1px solid #ccc;
+    padding-top: 20px;
+}
+
+.result-item {
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    height: 35px;
+    text-align: center;
+}
+
+.result-no {
+    width: 50px;
+}
+
+.result-name {
+    width: 100px;
+}
+
+.result-keywords {
+    width: 200px;
+}
+
+.result-start, .result-end {
+    width: 200px;
+}
