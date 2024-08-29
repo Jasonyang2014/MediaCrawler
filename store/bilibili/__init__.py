@@ -16,6 +16,7 @@ class BiliStoreFactory:
     STORES = {
         "csv": BiliCsvStoreImplement,
         "db": BiliDbStoreImplement,
+        "sqlite": BiliDbStoreImplement,
         "json": BiliJsonStoreImplement
     }
 

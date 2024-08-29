@@ -1,19 +1,18 @@
 import asyncio
 import json
 import threading
-import time
 from concurrent.futures import ThreadPoolExecutor
 
 from flask import Flask, request, render_template, jsonify
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO
 
 import config
 import db
 from cache.cache_factory import CacheFactory
 from cmd_arg import Args
 from main import CrawlerFactory
-from tools.utils import logger
 from tools.time_util import get_current_time
+from tools.utils import logger
 
 app = Flask(__name__)
 # app.config['SECRET_KEY'] = 'your_secret_key'  # 添加一个密钥
@@ -72,46 +71,58 @@ async def _start_task(arg, task_name):
         if config.SAVE_DATA_OPTION == "sqlite":
             await db.init_sqlite_db()
 
+        cache.set(task_name, get_current_time(), expire_time=2 * 24 * 60 * 60)
+        cache.set(arg.platform, True, expire_time=2 * 24 * 60 * 60)
+
         crawler = CrawlerFactory.create_crawler(platform=config.PLATFORM)
+        # perform_search(json.dumps(arg))
         await crawler.start()
 
-        cache.set(task_name, True, expire_time=2 * 24 * 60 * 60)
-        cache.set(arg.platform, True, expire_time=2 * 24 * 60 * 60)
         logger.info(f"Task {task_name} completed successfully")
     except Exception as e:
         logger.error(f"Error in _start_task: {str(e)}")
     finally:
-        callback()
+        callback(arg)
 
 
-def callback():
+def callback(arg: Args):
     logger.info("task done.")
+    socketio.emit('searchStatus', {'message': '搜索完成'})
+    task_name = f"{arg.platform}-{arg.keywords}-task"
+    result = {
+        'id': 1,
+        'name': task_name,
+        'platform': arg.platform,
+        'keywords': arg.keywords,
+        'start': cache.get(task_name),
+        'end': get_current_time()
+    }
+    socketio.emit('searchResult', {'type': 'searchResult', 'results': [result]})
 
 
 def perform_search(data):
+    data = json.loads(data)
     # 模拟搜索过程
     socketio.emit('searchStatus', {'message': '开始搜索...'})
+    result = {
+        'id': 1,
+        'name': f'{data["platform"]}-{data["keywords"]}-task',
+        'platform': f'{data["platform"]}',
+        'keywords': f'{data["keywords"]}',
+        'start': get_current_time(),
+        'end': ''
+    }
+    socketio.emit('searchResult', {'type': 'searchResult', 'results': [result]})
+    #     socketio.emit('searchStatus', {'message': f'已找到 {i + 1} 个结果'})
 
-    for i in range(5):  # 模拟5个结果
-        time.sleep(1)  # 模拟每个结果需要1秒
-        result = {
-            'id': f'{i + 1} {data["keywords"]}',
-            'name': f'{data["keywords"]}',
-            'keywords': f'{data["keywords"]}',
-            'start': get_current_time(),
-            'end': get_current_time()
-        }
-        socketio.emit('searchResult', {'type': 'searchResult', 'results': [result]})
-        socketio.emit('searchStatus', {'message': f'已找到 {i + 1} 个结果'})
-
-    socketio.emit('searchStatus', {'message': '搜索完成'})
+    # socketio.emit('searchStatus', {'message': '搜索完成'})
 
 
 @socketio.on('search')
-def handle_search(json):
-    print('Received search request:', json)
+def handle_search(data):
+    print('Received search request:', data)
     # 在新线程中执行搜索,以避免阻塞
-    threading.Thread(target=perform_search, args=(json['data'],)).start()
+    threading.Thread(target=perform_search, args={data}).start()
 
 
 if __name__ == "__main__":

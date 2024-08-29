@@ -54,17 +54,8 @@ select {
     font-size: 14px;
 }
 
-#searchResults {
+#status, #resultsTable {
     margin-top: 20px;
-    border-top: 1px solid #ccc;
-    padding-top: 20px;
-}
-
-.result-item {
-    margin-bottom: 15px;
-    padding: 10px;
-    background-color: #f9f9f9;
-    border-radius: 5px;
 }
 
 
@@ -80,7 +71,8 @@ table, th, td {
 }
 
 .result-name {
-    width: 100px;
+    width: 150px;
+    text-overflow: ellipsis;
 }
 
 .result-keywords {

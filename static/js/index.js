@@ -16,9 +16,9 @@ socket.on('searchResult', function (data) {
 });
 
 // 发起搜索
-function startSearch(keywords) {
-    console.log("search keywords ", keywords)
-    socket.emit('search', {data: {keywords: keywords}});
+function startSearch(data) {
+    console.log("search keywords ", data)
+    socket.emit('search', data);
 }
 
 
@@ -41,7 +41,7 @@ document.getElementById('searchForm').addEventListener('submit', function (event
         .then(response => response.json())
         .then(data => {
             console.log('Success:', data);
-            alert('搜索任务提交成功！');
+            // alert('搜索任务提交成功！');
             startSearch(JSON.stringify(jsonData))
         })
         .catch((error) => {
@@ -62,12 +62,14 @@ function displayResults(results) {
         results.forEach(function (result) {
             const row = resultsBody.insertRow();
             const idCell = row.insertCell(0);
-            const nameCell = row.insertCell(1);
-            const keyCell = row.insertCell(2);
-            const startCell = row.insertCell(3);
-            const endCell = row.insertCell(4);
+            const platformCell = row.insertCell(1);
+            const nameCell = row.insertCell(2);
+            const keyCell = row.insertCell(3);
+            const startCell = row.insertCell(4);
+            const endCell = row.insertCell(5);
 
             idCell.textContent = result.id
+            platformCell.textContent = result.platform;
             nameCell.textContent = result.name;
             keyCell.textContent = result.keywords;
             startCell.textContent = result.start;
