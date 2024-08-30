@@ -5,19 +5,7 @@
 -- HeidiSQL 版本:                  12.6.0.6765
 -- --------------------------------------------------------
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET NAMES  */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
-
 -- 导出 sqlite 的数据库结构
-CREATE
-DATABASE IF NOT EXISTS "sqlite";
-;
 
 -- 导出  表 sqlite.bilibili_up_info 结构
 CREATE TABLE IF NOT EXISTS `bilibili_up_info`
@@ -412,43 +400,40 @@ CREATE TABLE IF NOT EXISTS `xhs_note_comment`
 );
 
 
-CREATE TABLE sqlean_define
+CREATE TABLE IF NOT EXISTS  sqlean_define
 (
     name text primary key,
     type text,
     body text
 );
-DELETE
-FROM sqlite_sequence;
-CREATE INDEX `idx_xhs_note_co_comment_8e8349` ON `xhs_note_comment` (`comment_id`);
-CREATE INDEX `idx_xhs_note_co_create__204f8d` ON `xhs_note_comment` (`create_time`);
-CREATE INDEX idx_xhs_note_note_id_209457
-    on xhs_note (note_id);
-CREATE INDEX idx_xhs_note_time_eaa910
-    on xhs_note (time);
-CREATE INDEX `idx_bilibili_vi_video_i_31c36e` ON `bilibili_video` (`video_id`);
-CREATE INDEX `idx_bilibili_vi_create__73e0ec` ON `bilibili_video` (`create_time`);
-CREATE INDEX `idx_bilibili_vi_comment_41c34e` ON `bilibili_video_comment` (`comment_id`);
-CREATE INDEX `idx_bilibili_vi_video_i_f22873` ON `bilibili_video_comment` (`video_id`);
-CREATE INDEX `idx_bilibili_vi_user_123456` ON `bilibili_up_info` (`user_id`);
-CREATE INDEX `idx_douyin_awem_aweme_i_6f7bc6` ON `douyin_aweme` (`aweme_id`);
-CREATE INDEX `idx_douyin_awem_create__299dfe` ON `douyin_aweme` (`create_time`);
-CREATE INDEX `idx_douyin_awem_comment_fcd7e4` ON `douyin_aweme_comment` (`comment_id`);
-CREATE INDEX `idx_douyin_awem_aweme_i_c50049` ON `douyin_aweme_comment` (`aweme_id`);
-CREATE INDEX `idx_kuaishou_vi_video_i_c5c6a6` ON `kuaishou_video` (`video_id`);
-CREATE INDEX `idx_kuaishou_vi_create__a10dee` ON `kuaishou_video` (`create_time`);
-CREATE INDEX `idx_kuaishou_vi_comment_ed48fa` ON `kuaishou_video_comment` (`comment_id`);
-CREATE INDEX `idx_kuaishou_vi_video_i_e50914` ON `kuaishou_video_comment` (`video_id`);
-CREATE INDEX `idx_weibo_note_note_id_f95b1a` ON `weibo_note` (`note_id`);
-CREATE INDEX `idx_weibo_note_create__692709` ON `weibo_note` (`create_time`);
-CREATE INDEX `idx_weibo_note_create__d05ed2` ON `weibo_note` (`create_date_time`);
-CREATE INDEX `idx_weibo_note__comment_c7611c` ON `weibo_note_comment` (`comment_id`);
-CREATE INDEX `idx_weibo_note__note_id_24f108` ON `weibo_note_comment` (`note_id`);
-CREATE INDEX `idx_weibo_note__create__667fe3` ON `weibo_note_comment` (`create_date_time`);
-CREATE INDEX `idx_tieba_note_note_id` ON `tieba_note` (`note_id`);
-CREATE INDEX `idx_tieba_note_publish_time` ON `tieba_note` (`publish_time`);
-CREATE INDEX tieba_comment_comment_id_index on tieba_comment (comment_id);
-CREATE INDEX tieba_comment_id_index on tieba_comment (id);
-CREATE INDEX tieba_comment_note_id_index on tieba_comment (note_id);
-CREATE INDEX tieba_comment_publish_time_index on tieba_comment (publish_time);
+
+CREATE INDEX  IF NOT EXISTS `idx_xhs_note_co_comment_8e8349` ON `xhs_note_comment` (`comment_id`);
+CREATE INDEX  IF NOT EXISTS `idx_xhs_note_co_create__204f8d` ON `xhs_note_comment` (`create_time`);
+CREATE INDEX  IF NOT EXISTS idx_xhs_note_note_id_209457 on xhs_note (note_id);
+CREATE INDEX  IF NOT EXISTS idx_xhs_note_time_eaa910 on xhs_note (time);
+CREATE INDEX  IF NOT EXISTS `idx_bilibili_vi_video_i_31c36e` ON `bilibili_video` (`video_id`);
+CREATE INDEX  IF NOT EXISTS `idx_bilibili_vi_create__73e0ec` ON `bilibili_video` (`create_time`);
+CREATE INDEX  IF NOT EXISTS `idx_bilibili_vi_comment_41c34e` ON `bilibili_video_comment` (`comment_id`);
+CREATE INDEX  IF NOT EXISTS `idx_bilibili_vi_video_i_f22873` ON `bilibili_video_comment` (`video_id`);
+CREATE INDEX  IF NOT EXISTS `idx_bilibili_vi_user_123456` ON `bilibili_up_info` (`user_id`);
+CREATE INDEX  IF NOT EXISTS `idx_douyin_awem_aweme_i_6f7bc6` ON `douyin_aweme` (`aweme_id`);
+CREATE INDEX  IF NOT EXISTS `idx_douyin_awem_create__299dfe` ON `douyin_aweme` (`create_time`);
+CREATE INDEX  IF NOT EXISTS `idx_douyin_awem_comment_fcd7e4` ON `douyin_aweme_comment` (`comment_id`);
+CREATE INDEX  IF NOT EXISTS `idx_douyin_awem_aweme_i_c50049` ON `douyin_aweme_comment` (`aweme_id`);
+CREATE INDEX  IF NOT EXISTS `idx_kuaishou_vi_video_i_c5c6a6` ON `kuaishou_video` (`video_id`);
+CREATE INDEX  IF NOT EXISTS `idx_kuaishou_vi_create__a10dee` ON `kuaishou_video` (`create_time`);
+CREATE INDEX  IF NOT EXISTS `idx_kuaishou_vi_comment_ed48fa` ON `kuaishou_video_comment` (`comment_id`);
+CREATE INDEX  IF NOT EXISTS `idx_kuaishou_vi_video_i_e50914` ON `kuaishou_video_comment` (`video_id`);
+CREATE INDEX  IF NOT EXISTS `idx_weibo_note_note_id_f95b1a` ON `weibo_note` (`note_id`);
+CREATE INDEX  IF NOT EXISTS `idx_weibo_note_create__692709` ON `weibo_note` (`create_time`);
+CREATE INDEX  IF NOT EXISTS `idx_weibo_note_create__d05ed2` ON `weibo_note` (`create_date_time`);
+CREATE INDEX  IF NOT EXISTS `idx_weibo_note__comment_c7611c` ON `weibo_note_comment` (`comment_id`);
+CREATE INDEX  IF NOT EXISTS `idx_weibo_note__note_id_24f108` ON `weibo_note_comment` (`note_id`);
+CREATE INDEX  IF NOT EXISTS `idx_weibo_note__create__667fe3` ON `weibo_note_comment` (`create_date_time`);
+CREATE INDEX  IF NOT EXISTS `idx_tieba_note_note_id` ON `tieba_note` (`note_id`);
+CREATE INDEX  IF NOT EXISTS `idx_tieba_note_publish_time` ON `tieba_note` (`publish_time`);
+CREATE INDEX  IF NOT EXISTS tieba_comment_comment_id_index on tieba_comment (comment_id);
+CREATE INDEX  IF NOT EXISTS tieba_comment_id_index on tieba_comment (id);
+CREATE INDEX  IF NOT EXISTS tieba_comment_note_id_index on tieba_comment (note_id);
+CREATE INDEX  IF NOT EXISTS tieba_comment_publish_time_index on tieba_comment (publish_time);
 
