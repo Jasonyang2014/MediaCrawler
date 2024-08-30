@@ -14,6 +14,7 @@ class KuaishouStoreFactory:
     STORES = {
         "csv": KuaishouCsvStoreImplement,
         "db": KuaishouDbStoreImplement,
+        "sqlite": KuaishouDbStoreImplement,
         "json": KuaishouJsonStoreImplement
     }
 

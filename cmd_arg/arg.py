@@ -54,7 +54,8 @@ class Args():
                  get_comment=config.ENABLE_GET_COMMENTS,
                  get_sub_comment=config.ENABLE_GET_SUB_COMMENTS,
                  save_data_option=config.SAVE_DATA_OPTION,
-                 cookies=config.COOKIES):
+                 cookies=config.COOKIES,
+                 max_count=config.CRAWLER_MAX_NOTES_COUNT):
         self.platform = platform
         self.lt = lt
         self.type = type
@@ -64,6 +65,7 @@ class Args():
         self.get_sub_comment = get_sub_comment
         self.save_data_option = save_data_option
         self.cookies = cookies
+        self.max_count = max_count
 
     def parse(self):
         config.PLATFORM = self.platform
@@ -75,3 +77,4 @@ class Args():
         config.ENABLE_GET_SUB_COMMENTS = self.get_sub_comment
         config.SAVE_DATA_OPTION = self.save_data_option
         config.COOKIES = self.cookies
+        config.MAX_COUNT = self.max_count

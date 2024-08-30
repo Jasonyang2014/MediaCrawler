@@ -14,6 +14,7 @@ class DouyinStoreFactory:
     STORES = {
         "csv": DouyinCsvStoreImplement,
         "db": DouyinDbStoreImplement,
+        "sqlite": DouyinDbStoreImplement,
         "json": DouyinJsonStoreImplement
     }
 

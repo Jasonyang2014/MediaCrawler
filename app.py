@@ -16,7 +16,7 @@ from tools.utils import logger
 
 app = Flask(__name__)
 # app.config['SECRET_KEY'] = 'your_secret_key'  # 添加一个密钥
-socketio = SocketIO(app, async_mode='threading')  # 使用 threading 模式
+socketio = SocketIO(app, async_mode='threading', cors_allowed_origins="*")  # 使用 threading 模式
 cache = CacheFactory.create_cache("memory")
 executor = ThreadPoolExecutor()
 
@@ -44,13 +44,13 @@ def run():
             if task_list:
                 logger.info(f"stopping task {task_list[0]}")
                 old_task = cache.get(task_list[0])
-                if old_task and not old_task.done():
+                if old_task:
                     logger.info(f"task {old_task} exists.")
 
         if task is None:
             # Start the task in a background thread
             executor.submit(start_task, arg, task_name)
-            return jsonify({"message": f"Task {task_name} started successfully"}), 202
+            return jsonify({"message": f"Task {task_name} started successfully"}), 200
         else:
             return jsonify({"message": f"Task {task_name} is already running"}), 200
     except Exception as e:
@@ -98,6 +98,8 @@ def callback(arg: Args):
         'end': get_current_time()
     }
     socketio.emit('searchResult', {'type': 'searchResult', 'results': [result]})
+    cache.set(task_name, None)
+    cache.set(arg.platform, None)
 
 
 def perform_search(data):
@@ -120,7 +122,7 @@ def perform_search(data):
 
 @socketio.on('search')
 def handle_search(data):
-    print('Received search request:', data)
+    logger.info('Received search request:' + data)
     # 在新线程中执行搜索,以避免阻塞
     threading.Thread(target=perform_search, args={data}).start()
 

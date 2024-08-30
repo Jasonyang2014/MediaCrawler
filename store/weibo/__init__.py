@@ -16,6 +16,7 @@ class WeibostoreFactory:
     STORES = {
         "csv": WeiboCsvStoreImplement,
         "db": WeiboDbStoreImplement,
+        "sqlite": WeiboDbStoreImplement,
         "json": WeiboJsonStoreImplement,
     }
 

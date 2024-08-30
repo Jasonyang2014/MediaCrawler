@@ -6,7 +6,6 @@
 from typing import Dict, List
 
 from async_db import AbstractDBClient
-from db import AsyncMysqlDB
 from var import media_crawler_db_var
 
 
