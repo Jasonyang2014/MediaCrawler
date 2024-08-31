@@ -26,7 +26,6 @@ cd /d %~dp0
 
 echo 虚拟环境已激活，当前路径为：%CD%
 echo 您现在可以开始工作了。
-echo 使用 deactivate 命令可以退出虚拟环境。
 
 :: 启动一个新的命令提示符，保持虚拟环境激活状态
 flask run --debug

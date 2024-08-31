@@ -13,8 +13,11 @@ from cmd_arg import Args
 from main import CrawlerFactory
 from tools.time_util import get_current_time
 from tools.utils import logger
+import xhs_web
 
 app = Flask(__name__)
+app.register_blueprint(xhs_web.xhs)
+
 # app.config['SECRET_KEY'] = 'your_secret_key'  # 添加一个密钥
 socketio = SocketIO(app, async_mode='threading', cors_allowed_origins="*")  # 使用 threading 模式
 cache = CacheFactory.create_cache("memory")
