@@ -283,8 +283,9 @@ class XiaoHongShuClient(AbstractApiClient):
         """
         result = []
         comments_has_more = True
+        total_count = config.MAX_COMMENT_COUNT
         comments_cursor = ""
-        while comments_has_more:
+        while comments_has_more and total_count > 0 and len(result) <= total_count:
             comments_res = await self.get_note_comments(note_id, comments_cursor)
             comments_has_more = comments_res.get("has_more", False)
             comments_cursor = comments_res.get("cursor", "")
@@ -454,6 +455,7 @@ class XiaoHongShuClient(AbstractApiClient):
         Returns:
 
         """
+
         def camel_to_underscore(key):
             return re.sub(r"(?<!^)(?=[A-Z])", "_", key).lower()
 

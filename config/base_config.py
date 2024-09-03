@@ -39,6 +39,8 @@ START_PAGE = 1
 # 爬取视频/帖子的数量控制
 CRAWLER_MAX_NOTES_COUNT = 1
 
+MAX_COMMENT_COUNT = -1
+
 # 并发爬虫数量控制
 MAX_CONCURRENCY_NUM = 1
 

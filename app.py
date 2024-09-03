@@ -13,11 +13,12 @@ from main import CrawlerFactory
 from tools.time_util import get_current_time
 from tools.utils import logger
 from web.xhs_web import xhs
-from web import db
+from web import db as webDb
+import db
 app = Flask(__name__)
 app.config['DATABASE'] = './data/sqlite.db'
 app.register_blueprint(xhs)
-db.init_db(app)
+webDb.init_db(app)
 # app.config['SECRET_KEY'] = 'your_secret_key'  # 添加一个密钥
 socketio = SocketIO(app, async_mode='threading', cors_allowed_origins="*")  # 使用 threading 模式
 cache = CacheFactory.create_cache("memory")
