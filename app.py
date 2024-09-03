@@ -84,7 +84,7 @@ async def _start_task(arg, task_name):
 
         logger.info(f"Task {task_name} completed successfully")
     except Exception as e:
-        logger.error(f"Error in _start_task: {str(e)}")
+        logger.error(f"Error in _start_task: {str(e.__cause__.args)}")
     finally:
         callback(arg)
 

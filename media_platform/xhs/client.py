@@ -1,5 +1,6 @@
 import asyncio
 import json
+import random
 import re
 from typing import Any, Callable, Dict, List, Optional, Union
 from urllib.parse import urlencode
@@ -221,6 +222,7 @@ class XiaoHongShuClient(AbstractApiClient):
             # "xsec_token": xsec_token
         }
         uri = "/api/sns/web/v1/feed"
+        await asyncio.sleep(random.randint(1, 2))
         res = await self.post(uri, data)
         if res and res.get("items"):
             res_dict: Dict = res["items"][0]["note_card"]
@@ -388,6 +390,7 @@ class XiaoHongShuClient(AbstractApiClient):
             "num": page_size,
             "image_formats": "jpg,webp,avif"
         }
+        await asyncio.sleep(random.randint(1, 2))
         return await self.get(uri, data)
 
     async def get_all_notes_by_creator(self, user_id: str, crawl_interval: float = 1.0,
