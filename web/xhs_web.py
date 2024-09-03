@@ -59,7 +59,7 @@ async def get_list(query_json) -> List[Dict[str, Any]]:
     if count == 0:
         return []
 
-    sql: str = "SELECT * FROM xhs_note WHERE source_keyword LIKE ? LIMIT ?, ?"
+    sql: str = "SELECT * FROM xhs_note WHERE source_keyword LIKE ? order by liked_count desc LIMIT ?, ?"
     params = (f"%{query}%", offset, page_size)
 
     try:
