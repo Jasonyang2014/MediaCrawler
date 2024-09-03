@@ -113,10 +113,8 @@
 
 
 ## 感谢下列Sponsors对本仓库赞助
-- <a href="https://www.kuaidaili.com/?ref=ldwkjqipvz6c">【快代理】企业级代理IP服务，极速稳定，安全可靠。爬虫工程师的绝佳选择。</a>
-  <a href="https://www.kuaidaili.com/?ref=ldwkjqipvz6c" target="_blank"><img src="https://www.kuaidaili.com/img/cps/470_300.png" alt="【快代理】企业级代理IP服务，极速稳定，安全可靠。爬虫工程师的绝佳选择。"></a><br>
-
-- <a href="https://sider.ai/ad-land-redirect?source=github&p1=mi&p2=kk">全网最火的ChatGPT插件Sider，我也免费薅羊毛用了快一年了，体验拉满。</a>
+> 帮我注册下面的AI插件，保留一天，我可以得到3rmb的赞助，感谢您的支持
+- <a href="https://sider.ai/ad-land-redirect?source=github&p1=mi&p2=kk">【Sider】全网最火的ChatGPT插件，我也免费薅羊毛用了快一年了，体验拉满。</a>
 
 成为赞助者，可以将您产品展示在这里，每天获得大量曝光，联系作者微信：yzglan
 

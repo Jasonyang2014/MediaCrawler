@@ -49,6 +49,7 @@ async def main():
     if config.SAVE_DATA_OPTION == "db":
         await db.close()
 
+
     if config.SAVE_DATA_OPTION == "sqlite":
         await db.close_sqlite()
 
