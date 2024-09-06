@@ -17,6 +17,8 @@ from .exception import DataFetchError, IPBlockError
 from .field import SearchNoteType, SearchSortType
 from .help import get_search_id, sign
 
+from tools.httpx_event_hook import response_log
+
 
 class XiaoHongShuClient(AbstractApiClient):
     def __init__(
@@ -83,7 +85,7 @@ class XiaoHongShuClient(AbstractApiClient):
         # return response.text
         return_response = kwargs.pop('return_response', False)
 
-        async with httpx.AsyncClient(proxies=self.proxies) as client:
+        async with httpx.AsyncClient(proxies=self.proxies, event_hooks={'response': [response_log]}) as client:
             response = await client.request(
                 method, url, timeout=self.timeout,
                 **kwargs
