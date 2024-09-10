@@ -12,7 +12,6 @@ from cmd_arg import Args
 from main import CrawlerFactory
 from tools.time_util import get_current_time
 from tools.utils import logger
-from var import set_socketio
 from web.xhs_web import xhs
 from web import db as webDb
 import db
@@ -26,7 +25,6 @@ webDb.init_db(app)
 socketio = SocketIO(app, async_mode='threading', cors_allowed_origins="*")  # 使用 threading 模式
 cache = CacheFactory.create_cache("memory")
 executor = ThreadPoolExecutor()
-set_socketio(socketio)
 
 @app.route("/")
 def hello():
@@ -45,7 +43,7 @@ def run():
         platform_exists = cache.get(arg.platform)
         task = cache.get(task_name)
 
-        if platform_exists:
+        if platform_exists is not None:
             logger.info(f"platform {arg.platform} is running.")
             task_list = cache.keys(f"{arg.platform}-")
             if task_list:
