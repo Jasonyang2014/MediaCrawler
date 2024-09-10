@@ -12,9 +12,12 @@ from cmd_arg import Args
 from main import CrawlerFactory
 from tools.time_util import get_current_time
 from tools.utils import logger
+from var import set_socketio
 from web.xhs_web import xhs
 from web import db as webDb
 import db
+from flask import g
+
 app = Flask(__name__)
 app.config['DATABASE'] = './data/sqlite.db'
 app.register_blueprint(xhs)
@@ -23,7 +26,7 @@ webDb.init_db(app)
 socketio = SocketIO(app, async_mode='threading', cors_allowed_origins="*")  # 使用 threading 模式
 cache = CacheFactory.create_cache("memory")
 executor = ThreadPoolExecutor()
-
+set_socketio(socketio)
 
 @app.route("/")
 def hello():

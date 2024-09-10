@@ -24,16 +24,14 @@ async def list_pages():
         page_data = await get_list(query_json)
         total_page = math.ceil(count / page_size)
         return jsonify({"code": 200, "message": "ok", "data": {
-            "page": {
-                "pageNo": page_no,
-                "pageSize": page_size,
-                "total": count,
-                "totalPage": total_page,
-                "list": page_data
-            }
+            "pageNo": page_no,
+            "pageSize": page_size,
+            "total": count,
+            "totalPage": total_page,
+            "list": page_data
         }}), 200
 
-    return jsonify({"code": 200, "message": "ok", "data": [], 'total': count}), 200
+    return jsonify({"code": 200, "message": "ok", "data": {}, 'total': count}), 200
 
 
 async def get_list_cnt(query_json):
