@@ -28,7 +28,7 @@ HEADLESS = False
 SAVE_LOGIN_STATE = True
 
 # 数据保存类型选项配置,支持三种类型：csv、db、json
-SAVE_DATA_OPTION = "sqlite"  # csv or db or json
+SAVE_DATA_OPTION = "csv"  # csv or db or json
 
 # 用户浏览器缓存的浏览器文件配置
 USER_DATA_DIR = "%s_user_data_dir"  # %s will be replaced by platform name
@@ -148,7 +148,7 @@ STOP_WORDS_FILE = "./docs/hit_stopwords.txt"
 # 中文字体文件路径
 FONT_PATH = "./docs/STZHONGS.TTF"
 
-# 是否开启日志输出到文件 
+# 是否开启日志输出到文件
 ENABLE_LOG_TO_FILE = True
 # 是否关闭控制台日志
 ENABLE_CONSOLE_LOG = True
