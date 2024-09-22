@@ -1,7 +1,9 @@
 import asyncio
+import base64
 import json
 import logging
 from collections import Counter
+from typing import Union
 
 import aiofiles
 import jieba
@@ -12,6 +14,7 @@ import config
 from tools import utils
 
 plot_lock = asyncio.Lock()
+
 
 class AsyncWordCloudGenerator:
     def __init__(self):
@@ -45,9 +48,30 @@ class AsyncWordCloudGenerator:
 
         await self.generate_word_cloud(word_freq, save_words_prefix)
 
-    async def generate_word_cloud(self, word_freq, save_words_prefix):
+    async def generate_words_cloud(self, word_list, save_words_prefix, top_number):
+        all_text = ' '.join(item for item in word_list)
+        words = [word for word in jieba.lcut(all_text) if word not in self.stop_words and len(word.strip()) > 0]
+        word_freq = Counter(words)
+
+        # Save word frequency to file
+        freq_file = f"{save_words_prefix}_word_freq.json"
+        sorted_words = dict(word_freq.most_common())
+        async with aiofiles.open(freq_file, 'w', encoding='utf-8') as file:
+            await file.write(json.dumps(sorted_words, ensure_ascii=False, indent=4))
+
+        # Try to acquire the plot lock without waiting
+        if plot_lock.locked():
+            utils.logger.info("Skipping word cloud generation as the lock is held.")
+            return ''
+
+        await self.generate_word_cloud(word_freq, save_words_prefix, top_number=top_number)
+        with open(f'{save_words_prefix}_word_cloud.png', 'rb') as f:
+            base64_data = base64.b64encode(f.read()).decode('utf-8')
+        return base64_data
+
+    async def generate_word_cloud(self, word_freq, save_words_prefix, top_number=20):
         await plot_lock.acquire()
-        top_20_word_freq = dict(word_freq.most_common(20))
+        top_20_word_freq = dict(word_freq.most_common(top_number))
         wordcloud = WordCloud(
             font_path=config.FONT_PATH,
             width=800,
@@ -66,7 +90,7 @@ class AsyncWordCloudGenerator:
 
         plt.axis('off')
         plt.tight_layout(pad=0)
-        plt.savefig(f"{save_words_prefix}_word_cloud.png", format='png', dpi=300)
+        plt.savefig(f"{save_words_prefix}_word_cloud.png", format='png', dpi=100)
         plt.close()
 
         plot_lock.release()

@@ -8,6 +8,7 @@ from flask import Blueprint, request, jsonify
 from tools import utils
 from tools.utils import logger
 from . import db
+from tools import words
 
 xhs = Blueprint('xhs', __name__, url_prefix="/xhs")
 
@@ -34,6 +35,32 @@ async def list_pages():
     return jsonify({"code": 200, "message": "ok", "data": {}, 'total': count}), 200
 
 
+@xhs.post("/note/wordcloud")
+async def world_could():
+    utils.logger.info(f"{request.url} {request.json}")
+    query_json = request.json
+    query_words = query_json.get('q', [])
+    tag_words = await get_tags_list(query_words)
+    clouds = words.AsyncWordCloudGenerator()
+    base64_data = await clouds.generate_words_cloud(tag_words, f"query_words_{query_words}", 50)
+    return jsonify({"code": 200, "message": "ok", "data": base64_data}), 200
+
+
+# 获取词云
+async def get_tags_list(query_words: str) -> List[str]:
+    database = db.get_db()
+    sql: str = f"SELECT tag_list FROM xhs_note WHERE source_keyword LIKE '%{query_words}%'"
+    cur = database.execute(sql)
+    rows = cur.fetchall()
+    cur.close()
+    result = []
+    for row in rows:
+        tag = row[0]
+        if tag.strip() != '':
+            result.append(row[0])
+    return result
+
+
 async def get_list_cnt(query_json):
     database = db.get_db()
     query = query_json.get('q', '')
@@ -57,7 +84,7 @@ async def get_list(query_json) -> List[Dict[str, Any]]:
     if count == 0:
         return []
 
-    sql: str = "SELECT * FROM xhs_note WHERE source_keyword LIKE ? order by liked_count desc LIMIT ?, ?"
+    sql: str = "SELECT * FROM xhs_note WHERE source_keyword LIKE ? order by liked_count, `time` desc LIMIT ?, ?"
     params = (f"%{query}%", offset, page_size)
 
     try:
