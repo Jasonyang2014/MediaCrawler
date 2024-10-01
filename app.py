@@ -17,7 +17,7 @@ from web import db as webDb
 import db
 from flask import g
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='templates/images/')
 app.config['DATABASE'] = './data/sqlite.db'
 app.register_blueprint(xhs)
 webDb.init_db(app)
@@ -25,6 +25,7 @@ webDb.init_db(app)
 socketio = SocketIO(app, async_mode='threading', cors_allowed_origins="*")  # 使用 threading 模式
 cache = CacheFactory.create_cache("memory")
 executor = ThreadPoolExecutor()
+
 
 @app.route("/")
 def hello():

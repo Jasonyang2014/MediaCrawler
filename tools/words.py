@@ -1,10 +1,8 @@
 import asyncio
-import base64
 import json
 import logging
 from collections import Counter
-from typing import Union
-
+import uuid
 import aiofiles
 import jieba
 import matplotlib.pyplot as plt
@@ -32,44 +30,40 @@ class AsyncWordCloudGenerator:
 
     async def generate_word_frequency_and_cloud(self, data, save_words_prefix):
         all_text = ' '.join(item['content'] for item in data)
-        words = [word for word in jieba.lcut(all_text) if word not in self.stop_words and len(word.strip()) > 0]
-        word_freq = Counter(words)
-
-        # Save word frequency to file
-        freq_file = f"{save_words_prefix}_word_freq.json"
-        sorted_words = dict(word_freq.most_common())
-        async with aiofiles.open(freq_file, 'w', encoding='utf-8') as file:
-            await file.write(json.dumps(sorted_words, ensure_ascii=False, indent=4))
+        word_freq = await self.count_words_to_json_file(all_text, save_words_prefix)
 
         # Try to acquire the plot lock without waiting
         if plot_lock.locked():
             utils.logger.info("Skipping word cloud generation as the lock is held.")
             return
 
-        await self.generate_word_cloud(word_freq, save_words_prefix)
+        await self.generate_word_cloud(word_freq, f'{save_words_prefix}_words_cloud.png')
 
-    async def generate_words_cloud(self, word_list, save_words_prefix, top_number):
-        all_text = ' '.join(item for item in word_list)
+    async def count_words_to_json_file(self, all_text, save_words_prefix):
         words = [word for word in jieba.lcut(all_text) if word not in self.stop_words and len(word.strip()) > 0]
         word_freq = Counter(words)
-
         # Save word frequency to file
         freq_file = f"{save_words_prefix}_word_freq.json"
         sorted_words = dict(word_freq.most_common())
         async with aiofiles.open(freq_file, 'w', encoding='utf-8') as file:
             await file.write(json.dumps(sorted_words, ensure_ascii=False, indent=4))
+        return word_freq
+
+    async def generate_web_words_cloud(self, word_list, save_words_prefix, top_number):
+        all_text = ' '.join(item for item in word_list)
+        word_freq = await self.count_words_to_json_file(all_text, save_words_prefix)
 
         # Try to acquire the plot lock without waiting
         if plot_lock.locked():
             utils.logger.info("Skipping word cloud generation as the lock is held.")
             return ''
+        filename = str(uuid.uuid4())
+        await self.generate_word_cloud(word_freq, f'{filename}.png', top_number=top_number,
+                                       save_path='templates/images/')
 
-        await self.generate_word_cloud(word_freq, save_words_prefix, top_number=top_number)
-        with open(f'{save_words_prefix}_word_cloud.png', 'rb') as f:
-            base64_data = base64.b64encode(f.read()).decode('utf-8')
-        return base64_data
+        return f'/images/{filename}.png'
 
-    async def generate_word_cloud(self, word_freq, save_words_prefix, top_number=20):
+    async def generate_word_cloud(self, word_freq, save_words_cloud_filename, top_number=20, save_path=''):
         await plot_lock.acquire()
         top_20_word_freq = dict(word_freq.most_common(top_number))
         wordcloud = WordCloud(
@@ -90,7 +84,7 @@ class AsyncWordCloudGenerator:
 
         plt.axis('off')
         plt.tight_layout(pad=0)
-        plt.savefig(f"{save_words_prefix}_word_cloud.png", format='png', dpi=100)
+        plt.savefig(f"{save_path}{save_words_cloud_filename}", format='png', dpi=100)
         plt.close()
 
         plot_lock.release()

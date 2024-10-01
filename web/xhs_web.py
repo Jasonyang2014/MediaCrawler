@@ -42,8 +42,8 @@ async def world_could():
     query_words = query_json.get('q', [])
     tag_words = await get_tags_list(query_words)
     clouds = words.AsyncWordCloudGenerator()
-    base64_data = await clouds.generate_words_cloud(tag_words, f"query_words_{query_words}", 50)
-    return jsonify({"code": 200, "message": "ok", "data": base64_data}), 200
+    words_cloud_url = await clouds.generate_web_words_cloud(tag_words, f"{query_words}", top_number=50)
+    return jsonify({"code": 200, "message": "ok", "data": words_cloud_url}), 200
 
 
 # 获取词云
